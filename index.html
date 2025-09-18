@@ -1,61 +1,328 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AhaIntelligent - Trợ lý Ahamove</title>
-    <link rel="stylesheet" href="index.css" />
-  <script type="importmap">
-{
-  "imports": {
-    "path": "https://aistudiocdn.com/path@^0.12.7",
-    "vite": "https://aistudiocdn.com/vite@^7.1.5",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.20.0",
-    "marked": "https://aistudiocdn.com/marked@^16.3.0"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
+<head>
+  <meta charset="UTF-8">
+  <title>Chi tiết đơn hàng</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f5f6fa;
+      margin: 0;
+      padding: 0;
+      font-size: 15px;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .app-container {
+      width: 100%;
+      max-width: 430px;
+      background: #f5f6fa;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+      font-weight: 600;
+      font-size: 17px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header span {
+      position: absolute;
+      left: 16px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    section.card {
+      background: #fff;
+      margin: 10px;
+      padding: 14px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .section-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .route-item {
+      display: flex;
+      align-items: center;
+      margin: 8px 0;
+    }
+    .route-item .icon {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 8px;
+      border-radius: 50%;
+      font-size: 12px;
+      color: #fff;
+    }
+    .pickup {background:#007aff;}
+    .drop {background:#ff6600;}
+    .btn-add {
+      color: #ff6600;
+      font-weight: 500;
+      margin-top: 6px;
+      font-size: 14px;
+    }
+    .service-box {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+    }
+    .service-box img {
+      width: 26px;
+      height: 26px;
+      margin-right: 8px;
+    }
+    .sizes {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .size-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid #ccc;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 42px;
+      cursor: pointer;
+      font-size: 13px;
+      background: #fff;
+    }
+    .size-btn.active {
+      border: 2px solid #ff6600;
+      color: #ff6600;
+      font-weight: 600;
+    }
+    input[type=number], input[type=text] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 6px;
+      font-size: 15px;
+    }
+    .addon {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+    .addon:last-child {border-bottom: none;}
+    .addon .label {flex: 1;}
+    .addon .price {color:#333; margin:0 8px;}
+    .addon .add-btn {
+      color: #ff6600;
+      border: 1px solid #ff6600;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      text-align: center;
+      line-height: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .addon.active {
+      background: #fff7f2;
+      border-radius: 6px;
+    }
+    .addon.active .add-btn {
+      background: #ff6600;
+      color: #fff;
+      border: none;
+    }
+    .fee-bar {
+      background: #f0f7ff;
+      padding: 12px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      color: #333;
+      border-radius: 10px;
+      margin:10px;
+    }
+    .fee-bar:before {
+      content: "✔";
+      color: #007aff;
+      margin-right: 6px;
+    }
+    .footer {
+      background: #fff;
+      padding: 12px;
+      border-top: 1px solid #ddd;
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+      max-width: 430px;
+    }
+    .compare-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    .compare-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .compare-item img {
+      width: 22px;
+      height: 22px;
+    }
+    .compare-row .price {
+      font-weight: 600;
+      color:#ff6600;
+    }
+    /* 🔸 chỉnh lại nút AI thành màu cam */
+    .btn-ai {
+      background: #ff6600; /* đổi thành cam */
+      border-radius: 6px;
+      padding: 6px 10px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .total {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #ff6600;
+    }
+    .btn-order {
+      width: 100%;
+      background: #ff6600;
+      color: #fff;
+      border: none;
+      padding: 15px;
+      font-size: 17px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
 </head>
-  <body>
-    <main class="chat-container">
-      <header>
-        <h1>AhaIntelligent</h1>
-        <p>Trợ lý ảo thông minh từ Ahamove. Hãy hỏi tôi về các dịch vụ giao hàng nhé!</p>
-      </header>
-      <div id="chat-history" class="chat-history" aria-live="polite">
-        <!-- Chat messages will be appended here -->
+<body>
+<div class="app-container">
+
+  <header>
+    <span>&lt;</span>
+    Chi tiết đơn hàng
+  </header>
+
+  <!-- Lộ trình -->
+  <section class="card">
+    <div class="section-title">Lộ trình <small style="font-weight:400; color:#666;">0,36 km</small></div>
+    <div class="route-item"><div class="icon pickup">↑</div>7/28 Thành Thái</div>
+    <div class="route-item"><div class="icon drop">↓</div>51/10 Hẻm 51 Thành Thái</div>
+    <div class="btn-add">+ Thêm điểm giao</div>
+  </section>
+
+  <!-- Service -->
+  <section class="card service-box">
+    <img src="https://img.icons8.com/color/48/rocket--v1.png" alt="rocket"/>
+    <div><b>Siêu Tốc</b> – Lấy hàng ngay, giao hỏa tốc</div>
+  </section>
+
+  <!-- Goods -->
+  <section class="card">
+    <div class="section-title">Thông tin hàng hóa *</div>
+    <div style="color:#666; margin-bottom:4px;">Kích cỡ *</div>
+    <div class="sizes">
+      <div class="size-btn">S</div>
+      <div class="size-btn">M</div>
+      <div class="size-btn">L</div>
+      <div class="size-btn">XL</div>
+      <div class="size-btn active">2XL</div>
+      <div class="size-btn">3XL</div>
+    </div>
+    <div style="color:#666;">Khối lượng (kg) *</div>
+    <input type="number" value="10">
+  </section>
+
+  <!-- Special Requests -->
+  <section class="card">
+    <div class="section-title">Yêu cầu đặc biệt</div>
+    <input type="text" placeholder="Ghi chú cho tài xế">
+
+    <div class="addon"><div class="label">Túi giữ nhiệt</div><div class="price">0đ</div><div class="add-btn">+</div></div>
+    <div class="addon active"><div class="label">Giao hàng dễ vỡ</div><div class="price">10.000đ</div><div class="add-btn">✔</div></div>
+    <div class="addon"><div class="label">Gửi SMS cho người nhận</div><div class="price">1.000đ</div><div class="add-btn">+</div></div>
+    <div class="addon"><div class="label">Chụp ảnh chứng từ</div><div class="price">0đ</div><div class="add-btn">+</div></div>
+    <div class="addon"><div class="label">Quay lại điểm lấy hàng</div><div class="price">13.000đ</div><div class="add-btn">+</div></div>
+    <div class="addon"><div class="label">Nhận lại chứng từ</div><div class="price">0đ</div><div class="add-btn">+</div></div>
+    <div class="addon"><div class="label">Giao hàng tận tay</div><div class="price">0đ</div><div class="add-btn">+</div></div>
+    <div class="addon"><div class="label">Hỗ trợ tài xế</div><div class="price">5.000đ</div><div class="add-btn">+</div></div>
+  </section>
+
+  <!-- Fee bar -->
+  <div class="fee-bar">
+    Đơn đã được áp dụng Khai giá hàng hóa
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="compare-row">
+      <!-- Giá thị trường -->
+      <div class="compare-item">
+        <img src="https://img.icons8.com/fluency/48/combo-chart.png" alt="Market"/>
+        <span class="price">25.000đ (Giá thị trường)</span>
       </div>
-      <div id="prompt-starters" class="prompt-starters">
-        <h3>Gợi ý cho bạn:</h3>
-        <div class="buttons">
-            <button>So sánh giá với hãng khác?</button>
-            <button>Dịch vụ nào rẻ nhất?</button>
-            <button>Giao hàng gấp thì dùng gì?</button>
-        </div>
-      </div>
-      <form id="chat-form" class="chat-form">
-        <input
-          type="text"
-          id="chat-input"
-          placeholder="Bạn cần giao hàng như thế nào?..."
-          aria-label="Tin nhắn của bạn"
-          required
-        />
-        <button type="submit" id="send-button" aria-label="Gửi tin nhắn">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path
-              d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 24.117 24.117 0 0 0 18.23-12.007a.75.75 0 0 0 0-.884A24.117 24.117 0 0 0 3.478 2.404Z"
-            />
-          </svg>
-        </button>
-      </form>
-    </main>
-    <script type="module" src="index.tsx"></script>
-  <script type="module" src="/index.tsx"></script>
+      <!-- 🔸 Nút AI màu cam -->
+      <button class="btn-ai">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+             viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" 
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" stroke="white"/>
+          <text x="50%" y="54%" text-anchor="middle" 
+                fill="white" font-size="10" font-family="Arial">AI</text>
+        </svg>
+      </button>
+    </div>
+    <div class="total">Tổng phí: 28.000đ</div>
+<button class="btn-order">Đặt đơn</button>
+  </div>
+</div>
+
+<script>
+  // Bắt sự kiện click nút AI
+  document.querySelector(".btn-ai").addEventListener("click", function() {
+    // Lấy giá trị input
+    const weight = document.querySelector('input[type=number]').value;
+    const note   = document.querySelector('input[type=text]').value;
+
+    // Lưu vào localStorage
+    localStorage.setItem("weight", weight);
+    localStorage.setItem("note", note);
+
+    // Điều hướng sang trang chatbot.html
+    window.location.href = "chatbox.html";
+  });
+</script>
 </body>
 </html>
