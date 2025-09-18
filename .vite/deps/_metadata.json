@@ -1,0 +1,25 @@
+{
+  "hash": "0a96be2d",
+  "configHash": "1dff8d6d",
+  "lockfileHash": "5abf9e01",
+  "browserHash": "f21e99f3",
+  "optimized": {
+    "@google/genai": {
+      "src": "../../node_modules/@google/genai/dist/web/index.mjs",
+      "file": "@google_genai.js",
+      "fileHash": "ce329aba",
+      "needsInterop": false
+    },
+    "marked": {
+      "src": "../../node_modules/marked/lib/marked.esm.js",
+      "file": "marked.js",
+      "fileHash": "1c869700",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-Y3YMTSHA": {
+      "file": "chunk-Y3YMTSHA.js"
+    }
+  }
+}
