@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AhaIntelligent - Trợ lý Ahamove</title>
+    <link rel="stylesheet" href="index.css" />
+  <script type="importmap">
+{
+  "imports": {
+    "path": "https://aistudiocdn.com/path@^0.12.7",
+    "vite": "https://aistudiocdn.com/vite@^7.1.5",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.20.0",
+    "marked": "https://aistudiocdn.com/marked@^16.3.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <main class="chat-container">
+      <header>
+        <h1>AhaIntelligent</h1>
+        <p>Trợ lý ảo thông minh từ Ahamove. Hãy hỏi tôi về các dịch vụ giao hàng nhé!</p>
+      </header>
+      <div id="chat-history" class="chat-history" aria-live="polite">
+        <!-- Chat messages will be appended here -->
+      </div>
+      <div id="prompt-starters" class="prompt-starters">
+        <h3>Gợi ý cho bạn:</h3>
+        <div class="buttons">
+            <button>So sánh giá với hãng khác?</button>
+            <button>Dịch vụ nào rẻ nhất?</button>
+            <button>Giao hàng gấp thì dùng gì?</button>
+        </div>
+      </div>
+      <form id="chat-form" class="chat-form">
+        <input
+          type="text"
+          id="chat-input"
+          placeholder="Bạn cần giao hàng như thế nào?..."
+          aria-label="Tin nhắn của bạn"
+          required
+        />
+        <button type="submit" id="send-button" aria-label="Gửi tin nhắn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 24.117 24.117 0 0 0 18.23-12.007a.75.75 0 0 0 0-.884A24.117 24.117 0 0 0 3.478 2.404Z"
+            />
+          </svg>
+        </button>
+      </form>
+    </main>
+    <script type="module" src="index.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
